@@ -18,14 +18,17 @@
 package com.karankumar.bookproject.ui.shelf;
 
 import com.karankumar.bookproject.backend.entity.Book;
+import com.karankumar.bookproject.backend.service.BookService;
 import com.karankumar.bookproject.backend.utils.CustomShelfUtils;
 import com.karankumar.bookproject.backend.utils.PredefinedShelfUtils;
 import com.karankumar.bookproject.ui.book.BookForm;
 import com.karankumar.bookproject.ui.shelf.component.BookGridColumn;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.data.provider.SortDirection;
 import lombok.extern.java.Log;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -38,8 +41,10 @@ public class BookGrid {
     
     private final PredefinedShelfUtils predefinedShelfUtils;
     private final CustomShelfUtils customShelfUtils;
+    private final BookService bookService;
 
-    BookGrid(PredefinedShelfUtils predefinedShelfUtils, CustomShelfUtils customShelfUtils) {
+    BookGrid(PredefinedShelfUtils predefinedShelfUtils, CustomShelfUtils customShelfUtils, BookService bookService) {
+        this.bookService = bookService;
         this.bookGrid = new Grid<>(Book.class);
         this.predefinedShelfUtils = predefinedShelfUtils;
         this.customShelfUtils = customShelfUtils;
@@ -99,7 +104,17 @@ public class BookGrid {
 
     private void populateGridWithBooks(Set<Book> books, BookFilters bookFilters) {
         List<Book> items = filterShelf(books, bookFilters);
-        bookGrid.setItems(items);
+        bookGrid.setDataProvider(
+                (offset, limit) -> {
+                    Map<String, Boolean> sortOrder = sortOrders.stream()
+                            .collect(Collectors.toMap(
+                                    sort -> sort.getSorted(),
+                                    sort -> sort.getDirection() == SortDirection.ASCENDING));
+                    return bookService.findAll(offset, limit, sortOrder).stream();
+                },
+                () -> bookService.count()
+        );
+//        bookGrid.setItems(items);
     }
 
     private List<Book> filterShelf(Set<Book> books, BookFilters bookFilters) {

@@ -25,11 +25,15 @@ import com.karankumar.bookproject.backend.entity.Author;
 import com.karankumar.bookproject.backend.entity.Book;
 import com.karankumar.bookproject.backend.repository.BookRepository;
 import lombok.extern.java.Log;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -121,4 +125,16 @@ public class BookService {
 
         return jsonWriter.writeValueAsString(books);
     }
+
+    public List<Book> findAll(int offset, int limit,Map<String, Boolean> sortOrders) {
+        int page = offset / limit;
+        List<Sort.Order> orders = sortOrders.entrySet().stream()
+                .map(e -> new Sort.Order(e.getValue() ? Sort.Direction.ASC : Sort.Direction.DESC, e.getKey()))
+                .collect(Collectors.toList());
+
+        PageRequest pageRequest = new PageRequest(page, limit, orders.isEmpty() ? null : new Sort(orders));
+        List<Book> items = bookRepository.findAll(pageRequest).getContent();
+        return items.subList(offset%limit, items.size());
+    }
+
 }
