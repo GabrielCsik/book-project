@@ -173,6 +173,7 @@ public class BooksInShelfView extends VerticalLayout {
 
     public void updateGrid() {
         bookGrid.update(chosenShelf, bookFilters);
+        bookGrid.setChossenShelf(chosenShelf);
     }
 
     public void setChosenShelf(String chosenShelf) {

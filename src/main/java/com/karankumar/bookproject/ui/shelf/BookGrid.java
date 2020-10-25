@@ -17,18 +17,21 @@
 
 package com.karankumar.bookproject.ui.shelf;
 
+import com.karankumar.bookproject.backend.entity.Author;
 import com.karankumar.bookproject.backend.entity.Book;
+import com.karankumar.bookproject.backend.entity.PredefinedShelf;
 import com.karankumar.bookproject.backend.service.BookService;
 import com.karankumar.bookproject.backend.utils.CustomShelfUtils;
 import com.karankumar.bookproject.backend.utils.PredefinedShelfUtils;
 import com.karankumar.bookproject.ui.book.BookForm;
 import com.karankumar.bookproject.ui.shelf.component.BookGridColumn;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.data.provider.SortDirection;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import lombok.extern.java.Log;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -42,6 +45,7 @@ public class BookGrid {
     private final PredefinedShelfUtils predefinedShelfUtils;
     private final CustomShelfUtils customShelfUtils;
     private final BookService bookService;
+    private String chosenShelf;
 
     BookGrid(PredefinedShelfUtils predefinedShelfUtils, CustomShelfUtils customShelfUtils, BookService bookService) {
         this.bookService = bookService;
@@ -87,6 +91,9 @@ public class BookGrid {
         }
 
         Set<Book> books = getBooks(chosenShelf);
+        for (int i = 0; i < 150; i++) {
+            books.add(new Book("title" + i, new Author("firstname" + i, "lastname" + i), new PredefinedShelf(PredefinedShelf.ShelfName.DID_NOT_FINISH)));
+        }
         populateGridWithBooks(books, bookFilters);
     }
 
@@ -103,23 +110,30 @@ public class BookGrid {
     }
 
     private void populateGridWithBooks(Set<Book> books, BookFilters bookFilters) {
-        List<Book> items = filterShelf(books, bookFilters);
-        bookGrid.setDataProvider(
-                (offset, limit) -> {
-                    Map<String, Boolean> sortOrder = sortOrders.stream()
-                            .collect(Collectors.toMap(
-                                    sort -> sort.getSorted(),
-                                    sort -> sort.getDirection() == SortDirection.ASCENDING));
-                    return bookService.findAll(offset, limit, sortOrder).stream();
-                },
-                () -> bookService.count()
-        );
+//        List<Book> items = filterShelf(books, bookFilters);
+        DataProvider<Book, Void> dataProvider =
+                DataProvider.fromFilteringCallbacks(
+                        query -> {
+                            int indexOfFirstItemToLoad = query.getOffset();
+                            int itemsToLoad = query.getLimit();
+                            List<Book> allBooks = bookService.findAll(
+                                    PageRequest.of(indexOfFirstItemToLoad, itemsToLoad)
+                            ).toList();
+                            return allBooks.stream();
+                        },
+                        // TODO: handle filtering
+                        query -> Math.toIntExact(bookService.count()));
+        bookGrid.setDataProvider(dataProvider);
 //        bookGrid.setItems(items);
     }
 
-    private List<Book> filterShelf(Set<Book> books, BookFilters bookFilters) {
+    private List<Book> filterShelf(List<Book> books, BookFilters bookFilters) {
         return books.stream()
                     .filter(bookFilters::apply)
                     .collect(Collectors.toList());
+    }
+
+    public void setChossenShelf(String chosenShelf) {
+        chosenShelf = chosenShelf;
     }
 }

@@ -189,7 +189,7 @@ class BookServiceTest {
 
     @Test
     void allBooksReturnedWhenFilterIsNull() {
-        assertEquals(bookService.findAll(), bookService.findAll(null));
+        assertEquals(bookService.findAll(), bookService.findAll((String) null));
     }
 
     @Test
