@@ -74,6 +74,9 @@ public class BookService {
     public Long count() {
         return bookRepository.count();
     }
+    public Long countByTitle(String filter) {
+        return bookRepository.countByTitle(filter);
+    }
 
     public List<Book> findAll() {
         return bookRepository.findAll();
@@ -130,6 +133,14 @@ public class BookService {
 
     public Page<Book> findAll(Pageable pageable) {
         return bookRepository.findAll(
+                PageRequest.of(pageable.getPageNumber(),
+                        pageable.getPageSize())
+        );
+    }
+
+    public Page<Book> findAllByTitle(String bookTitle, Pageable pageable) {
+        return bookRepository.findAllByTitle(
+                bookTitle,
                 PageRequest.of(pageable.getPageNumber(),
                         pageable.getPageSize())
         );

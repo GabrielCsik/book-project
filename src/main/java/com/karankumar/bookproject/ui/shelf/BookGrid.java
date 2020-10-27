@@ -17,9 +17,7 @@
 
 package com.karankumar.bookproject.ui.shelf;
 
-import com.karankumar.bookproject.backend.entity.Author;
 import com.karankumar.bookproject.backend.entity.Book;
-import com.karankumar.bookproject.backend.entity.PredefinedShelf;
 import com.karankumar.bookproject.backend.service.BookService;
 import com.karankumar.bookproject.backend.utils.CustomShelfUtils;
 import com.karankumar.bookproject.backend.utils.PredefinedShelfUtils;
@@ -27,7 +25,6 @@ import com.karankumar.bookproject.ui.book.BookForm;
 import com.karankumar.bookproject.ui.shelf.component.BookGridColumn;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.PageRequest;
 
@@ -91,9 +88,9 @@ public class BookGrid {
         }
 
         Set<Book> books = getBooks(chosenShelf);
-        for (int i = 0; i < 150; i++) {
-            books.add(new Book("title" + i, new Author("firstname" + i, "lastname" + i), new PredefinedShelf(PredefinedShelf.ShelfName.DID_NOT_FINISH)));
-        }
+//        for (int i = 0; i < 150; i++) {
+//            books.add(new Book("title" + i, new Author("firstname" + i, "lastname" + i), new PredefinedShelf(PredefinedShelf.ShelfName.DID_NOT_FINISH)));
+//        }
         populateGridWithBooks(books, bookFilters);
     }
 
@@ -111,18 +108,22 @@ public class BookGrid {
 
     private void populateGridWithBooks(Set<Book> books, BookFilters bookFilters) {
 //        List<Book> items = filterShelf(books, bookFilters);
-        DataProvider<Book, Void> dataProvider =
+        DataProvider<Book, String> dataProvider =
                 DataProvider.fromFilteringCallbacks(
                         query -> {
                             int indexOfFirstItemToLoad = query.getOffset();
                             int itemsToLoad = query.getLimit();
-                            List<Book> allBooks = bookService.findAll(
+                            String filter = query.getFilter().orElse(null);
+                            List<Book> allBooks = bookService.findAllByTitle(filter,
                                     PageRequest.of(indexOfFirstItemToLoad, itemsToLoad)
                             ).toList();
                             return allBooks.stream();
                         },
                         // TODO: handle filtering
-                        query -> Math.toIntExact(bookService.count()));
+                        query -> {
+                            String filter = query.getFilter().orElse(null);
+                            return Math.toIntExact(bookService.countByTitle(filter));
+                        });
         bookGrid.setDataProvider(dataProvider);
 //        bookGrid.setItems(items);
     }
