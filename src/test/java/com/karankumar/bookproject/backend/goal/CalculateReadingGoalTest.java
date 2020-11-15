@@ -165,4 +165,14 @@ class CalculateReadingGoalTest {
         double booksToReadFromStartOfYear = booksToReadFromStartOfYear(26);
         assertThat(booksToReadFromStartOfYear).isEqualTo(0.5);
     }
+
+    @Test
+    void testProgressMadeTowardsGoal() {
+        assertThat(calculateProgressTowardsReadingGoal(5, 1)).isEqualTo(0.2);
+    }
+
+    @Test
+    void testnoProgressSet() {
+        assertThat(calculateProgressTowardsReadingGoal(0, 0)).isEqualTo(0);
+    }
 }

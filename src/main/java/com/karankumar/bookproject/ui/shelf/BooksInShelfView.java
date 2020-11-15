@@ -171,8 +171,9 @@ public class BooksInShelfView extends VerticalLayout {
         visibilityStrategies.get(shelfName).toggleColumnVisibility(bookGrid);
     }
 
-    public void updateGrid() {
-        bookGrid.update(chosenShelf, bookFilters);
+    public String updateGrid() {
+        var update = bookGrid.update(chosenShelf, bookFilters);
+        return update;
     }
 
     public void setChosenShelf(String chosenShelf) {

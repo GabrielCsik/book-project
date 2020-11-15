@@ -75,14 +75,15 @@ public class BookGrid {
         return bookGrid;
     }
 
-    void update(String chosenShelf, BookFilters bookFilters) {
+    String update(String chosenShelf, BookFilters bookFilters) {
         if (chosenShelf == null) {
             LOGGER.log(Level.FINEST, "Chosen shelf is null");
-            return;
+            return "Chosen shelf is null";
         }
 
         Set<Book> books = getBooks(chosenShelf);
         populateGridWithBooks(books, bookFilters);
+        return "Populated Grid with books";
     }
 
     private Set<Book> getBooks(String chosenShelf) {

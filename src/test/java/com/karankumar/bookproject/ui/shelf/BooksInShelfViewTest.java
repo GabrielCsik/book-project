@@ -25,17 +25,17 @@ import com.karankumar.bookproject.backend.service.BookService;
 import com.karankumar.bookproject.backend.service.CustomShelfService;
 import com.karankumar.bookproject.backend.service.PredefinedShelfService;
 import com.karankumar.bookproject.annotations.IntegrationTest;
+import com.karankumar.bookproject.backend.util.CustomShelfUtils;
+import com.karankumar.bookproject.backend.util.PredefinedShelfUtils;
 import com.karankumar.bookproject.ui.MockSpringServlet;
 import com.karankumar.bookproject.ui.shelf.component.BookGridColumn;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.spring.SpringServlet;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+
+import lombok.extern.java.Log;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-
+@Log
 @IntegrationTest
 @WebAppConfiguration
 @DisplayName("BooksInShelfView should")
@@ -148,6 +148,14 @@ class BooksInShelfViewTest {
                         .isFalse();
             }
         }
+    }
+
+    @Test
+    void bookGridUpdateTest(){
+        shelfView.setChosenShelf(null);
+        shelfView.setBookFilterAuthor(null);
+        shelfView.setBookFilterTitle(null);
+        assertThat(shelfView.updateGrid()).isEqualTo("Chosen shelf is null");
     }
 
     @AfterEach

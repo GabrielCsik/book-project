@@ -24,6 +24,7 @@ import com.karankumar.bookproject.backend.entity.account.Role;
 import com.karankumar.bookproject.backend.entity.account.User;
 import com.karankumar.bookproject.backend.repository.RoleRepository;
 import com.karankumar.bookproject.backend.repository.UserRepository;
+import com.karankumar.bookproject.backend.service.UserService;
 import com.karankumar.bookproject.ui.MockSpringServlet;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.SpringServlet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -221,6 +223,18 @@ class RegistrationFormTest {
 
         // then
         assertThat(passwordField.getErrorMessage()).isNotBlank();
+    }
+
+    @Test
+    void generateWeakPassword() {
+        String password = ".".repeat(130);
+        PasswordField passwordField = _get(PasswordField.class, spec -> spec.withId("password"));
+
+        // when
+        _setValue(passwordField, password);
+
+        // then
+        assertThat(passwordField.getErrorMessage()).isEqualTo("The chosen password is too weak. Try mixing uppercase letters, lowercase letters, numbers and special characters.");
     }
 
     private String generateInvalidPassword() {
