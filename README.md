@@ -43,6 +43,7 @@ Book tracker web app made using Spring Boot and Vaadin 14 (only the free compone
     <img src="/media/docs/readme/book_form.png" alt="New book form"/>
 </p>
 
+
 ![Books in shelf](/media/docs/readme/books_in_shelf.png)
         
 ![Reading goal](/media/docs/readme/reading_goal.png)
