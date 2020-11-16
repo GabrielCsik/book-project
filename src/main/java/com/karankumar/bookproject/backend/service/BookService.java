@@ -53,6 +53,7 @@ public class BookService {
         if (bookHasAuthorAndPredefinedShelf(book)) {
             addBookToAuthor(book);
 
+
             authorService.save(book.getAuthor());
             bookRepository.save(book);
         }
