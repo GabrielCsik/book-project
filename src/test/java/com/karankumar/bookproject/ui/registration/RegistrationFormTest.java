@@ -226,6 +226,7 @@ class RegistrationFormTest {
         assertThat(passwordField.getErrorMessage()).isNotBlank();
     }
 
+
     @Test
     void generateWeakPassword() {
         String password = ".".repeat(130);
