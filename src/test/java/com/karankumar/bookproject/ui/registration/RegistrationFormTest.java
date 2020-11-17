@@ -227,6 +227,7 @@ class RegistrationFormTest {
     }
 
 
+
     @Test
     void generateWeakPassword() {
         String password = ".".repeat(130);
