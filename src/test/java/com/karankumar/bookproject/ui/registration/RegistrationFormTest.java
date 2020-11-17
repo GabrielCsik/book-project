@@ -221,6 +221,7 @@ class RegistrationFormTest {
         // when
         _setValue(passwordField, generateInvalidPassword());
 
+
         // then
         assertThat(passwordField.getErrorMessage()).isNotBlank();
     }
