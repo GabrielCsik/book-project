@@ -1,5 +1,6 @@
 # Security Policy
 
+
 ## Reporting a Vulnerability
 
 To report a vulnerability, please email bookproject@madebykarankumar.com. Please do not expose the vulnerability in public, which includes creating a GitHub issue.
