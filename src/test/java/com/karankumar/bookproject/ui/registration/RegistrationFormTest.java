@@ -225,6 +225,7 @@ class RegistrationFormTest {
         // then
         assertThat(passwordField.getErrorMessage()).isNotBlank();
     }
+    
 
 
 
