@@ -219,6 +219,17 @@ class RegistrationFormTest {
         // then
         assertThat(passwordField.getErrorMessage()).isNotBlank();
     }
+    @Test
+    void generateWeakPassword() {
+        String password = ".".repeat(130);
+        PasswordField passwordField = _get(PasswordField.class, spec -> spec.withId("password"));
+
+        // when
+        _setValue(passwordField, password);
+
+        // then
+        assertThat(passwordField.getErrorMessage()).isEqualTo("The chosen password is too weak. Try mixing uppercase letters, lowercase letters, numbers and special characters.");
+    }
 
     private String generateInvalidPassword() {
         return ".".repeat(RegistrationForm.MAX_PASSWORD_LENGTH);

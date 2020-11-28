@@ -372,7 +372,7 @@ public class BookForm extends VerticalLayout {
         closeForm();
     }
 
-    private Book populateBookBean() {
+    Book populateBookBean() {
         String title;
         if (bookTitle.getValue() == null) {
             LOGGER.log(Level.SEVERE, "Book title from form field is null");

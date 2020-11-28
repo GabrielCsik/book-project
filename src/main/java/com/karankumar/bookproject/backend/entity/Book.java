@@ -129,4 +129,8 @@ public class Book extends BaseEntity {
             + "title='" + title + '\''
             + '}';
     }
+
+    public String getEdition() {
+        return edition;
+    }
 }

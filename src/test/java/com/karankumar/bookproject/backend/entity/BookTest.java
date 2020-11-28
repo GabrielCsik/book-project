@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +39,7 @@ class BookTest {
 
     private static Book testBook;
     private static Tag testTag;
+    private PredefinedShelfService predefinedShelfService;
 
     @Autowired
     public BookTest(PredefinedShelfService predefinedShelfService,
@@ -45,6 +47,7 @@ class BookTest {
                     TagService tagService) {
 
         PredefinedShelf toRead = predefinedShelfService.findToReadShelf();
+        this.predefinedShelfService = predefinedShelfService;
         BookTest.bookService = bookService;
         BookTest.tagService = tagService;
 
@@ -89,4 +92,17 @@ class BookTest {
         // then
         assertThat(tagService.findAll().size()).isOne();
     }
+
+//    @Test
+//    void setEditionTest(){
+//        Book book = new Book("title", new Author("first","last"), predefinedShelfService.findReadShelf());
+//        book.setEdition(null);
+//        assertThat(book.getEdition()).isEqualTo(null);
+//        book.setEdition(1);
+//        assertThat(book.getEdition()).isEqualTo("1st edition");
+//        book.setEdition(3);
+//        assertThat(book.getEdition()).isEqualTo("3rd edition");
+//        book.setEdition(4);
+//        assertThat(book.getEdition()).isEqualTo("4th edition");
+//    }
 }

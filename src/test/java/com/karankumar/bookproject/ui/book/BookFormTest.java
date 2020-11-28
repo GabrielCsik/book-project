@@ -755,6 +755,26 @@ class BookFormTest {
         // then
         assertThat(bookForm.saveButton.isEnabled()).isTrue();
     }
+    @Test
+    void populateBookBeenTest(){
+        bookForm = new BookForm(predefinedShelfService,customShelfService);
+        System.out.println(bookForm.bookTitle);
+        assertThat(bookForm.populateBookBean()).isEqualTo(null);
+
+    }
+
+    @Test
+    void setBookNull() {
+        Book book = null;
+        bookForm.setBook(book);
+        assertThat(bookForm.customShelfField.isInvalid());
+    }
+
+    @Test
+    void customShelfName() {
+        bookForm.addBook();
+        assertThat(bookForm.saveButton.getText()).isEqualTo("Add book");
+    }
 
     @AfterEach
     public void tearDown() {
